@@ -12,20 +12,24 @@ class CodeMaker
 
   def score_a_guess(guess)
     score_table = {
-      right_color_right_position: 0, 
-      right_color_wrong_position: 0,
-      wrong_colors: 0
+      wrong_colors: 0,
+      right_color_right_position: 0,
+      right_color_wrong_position: 0
       }
     
+    @secret_colors.uniq.each do |x|
+      s = (@secret_colors.select {|y| y == x}).length
+      g = (guess.select {|y| y == x}).length
+      score_table[:wrong_colors] += (s-g).abs
+    end
+
     guess.each_with_index do |x, i|
       if @secret_colors[i] == x 
         score_table[:right_color_right_position] += 1
-      elsif @secret_colors.include?(x)
-        score_table[:right_color_wrong_position] += 1
-      else 
-        score_table[:wrong_colors] += 1
       end
     end
+
+    score_table[:right_color_wrong_position] = (4 - score_table[:wrong_colors]) - score_table[:right_color_right_position]
     score_table
   end
 
