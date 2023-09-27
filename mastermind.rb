@@ -17,7 +17,7 @@ class CodeMaker
       right_color_wrong_position: 0
       }
     
-    @secret_colors.uniq.each do |x|
+    (@secret_colors.uniq).each do |x|
       s = (@secret_colors.select {|y| y == x}).length
       g = (guess.select {|y| y == x}).length
       score_table[:wrong_colors] += (s-g).abs
