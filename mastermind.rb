@@ -24,9 +24,7 @@ class CodeMaker
       end
     end
     hiddens.uniq.each do |x|
-      xs = (hiddens.select { |elt| elt == x }).length
-      gs = (wrongs_guesses.select { |elt| elt == x }).length
-      score_table[:right_color_wrong_position] += [xs, gs].min
+      score_table[:right_color_wrong_position] += [hiddens.count(x), wrongs_guesses.count(x)].min
     end
     score_table
   end
@@ -36,7 +34,6 @@ class CodeMaker
       @hidden_colors << $color_list.sample(4)
     end
   end
-
 end
 
 class CodeBroker
