@@ -36,6 +36,7 @@ class CodeMaker
   end
 end
 
+# The guesser
 class CodeBroker
   attr_accessor :guess
 
@@ -47,10 +48,12 @@ class CodeBroker
   end
 
   def update_guess(feedback)
+    # Need to implement a strategy here
     @gess.map! {|color| $color_list.sample}
   end
 end
 
+# If the guesser is a human
 class HumanGuesser < CodeBroker
   def update_guess
     begin
@@ -59,11 +62,12 @@ class HumanGuesser < CodeBroker
         print "#{index + 1}:  #{color},\t"
       end
       choice = gets.chomp.split('').map!(&:to_i)
-    end until choice.length == 4 && choice.all? {|x| x >= 1 && x <= 6}
+    end until choice.length == 4 && choice.all? { |x| x >= 1 && x <= 6 }
     @guess = choice.map {|x| $color_list[x-1]}
   end
 end
 
+# Play a round allowing n=12 guesses.
 mastermind = CodeMaker.new
 Human = HumanGuesser.new
 track = 0
