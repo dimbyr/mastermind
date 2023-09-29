@@ -1,6 +1,7 @@
 # a selector
 class CodeMaker
   attr_accessor :secret_colors
+
   $color_list = %w[Red Blue Green Yellow Purple Orange]
 
   def initialize
@@ -16,20 +17,26 @@ class CodeMaker
       right_color_right_position: 0,
       right_color_wrong_position: 0
       }
-    
-    (@secret_colors.uniq).each do |x|
-      s = (@secret_colors.select {|y| y == x}).length
-      g = (guess.select {|y| y == x}).length
-      score_table[:wrong_colors] += (s-g).abs
-    end
+
+    wrongs_guesses = []
+    hiddens = []
 
     guess.each_with_index do |x, i|
-      if @secret_colors[i] == x 
+      if @secret_colors[i] == x
         score_table[:right_color_right_position] += 1
+      else
+        wrongs_guesses << x
+        hiddens << @secret_colors[i]
       end
     end
 
-    score_table[:right_color_wrong_position] = (4 - score_table[:wrong_colors]) - score_table[:right_color_right_position]
+    hiddens.uniq.each do |x|
+      xs = (hiddens.select {|elt| elt == x}).length
+      gs = (wrongs_guesses.select {|elt| elt ==  x}).length
+      score_table[:wrong_colors] += (xs-gs).abs
+      score_table[:right_color_wrong_position] += [xs, gs].min
+    end
+
     score_table
   end
 
