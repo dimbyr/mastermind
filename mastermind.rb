@@ -12,15 +12,9 @@ class CodeMaker
   end
 
   def score_a_guess(guess)
-    score_table = {
-      wrong_colors: 0,
-      right_color_right_position: 0,
-      right_color_wrong_position: 0
-      }
-
+    score_table = {right_color_right_position: 0, right_color_wrong_position: 0}
     wrongs_guesses = []
     hiddens = []
-
     guess.each_with_index do |x, i|
       if @secret_colors[i] == x
         score_table[:right_color_right_position] += 1
@@ -29,14 +23,11 @@ class CodeMaker
         hiddens << @secret_colors[i]
       end
     end
-
     hiddens.uniq.each do |x|
-      xs = (hiddens.select {|elt| elt == x}).length
-      gs = (wrongs_guesses.select {|elt| elt ==  x}).length
-      score_table[:wrong_colors] += (xs-gs).abs
+      xs = (hiddens.select { |elt| elt == x }).length
+      gs = (wrongs_guesses.select { |elt| elt == x }).length
       score_table[:right_color_wrong_position] += [xs, gs].min
     end
-
     score_table
   end
 
@@ -50,9 +41,10 @@ end
 
 class CodeBroker
   attr_accessor :guess
+
   def initialize
     @guess = []
-    4.times do 
+    4.times do
       @guess << $color_list.sample
     end
   end
@@ -60,26 +52,17 @@ class CodeBroker
   def update_guess(feedback)
     @gess.map! {|color| $color_list.sample}
   end
-
 end
 
 class HumanGuesser < CodeBroker
-
   def update_guess()
-    puts "Select 4 colors using numbers from 1-6 (NO SPACE). Duplicates are allowed. eg. 1111 is [Red Red Red Red]"
-    $color_list.each_with_index do |color, index|
-      print "#{index + 1}:  #{color},\t"
-    end
-    puts "\n"
-    choice = gets.chomp.split('').map! {|x| x.to_i}
-    until (choice.length == 4 && choice.all? {|x| x >= 1 && x <= 6}) do
-      puts "Please enter a sequence of FOUR numbers (no space) between 1-6 to choose 4 colors"
+    begin
+      puts 'Select 4 colors using 4 numbers from 1-6 (NO SPACE).'
       $color_list.each_with_index do |color, index|
         print "#{index + 1}:  #{color},\t"
       end
-      puts "\n"
-      choice = gets.chomp.split('').map! {|x| x.to_i}
-    end
+      choice = gets.chomp.split('').map!(&:to_i)
+    end until choice.length == 4 && choice.all? {|x| x >= 1 && x <= 6}
     @guess = choice.map {|x| $color_list[x-1]}
   end
 end
