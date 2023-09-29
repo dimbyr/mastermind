@@ -52,7 +52,7 @@ class CodeBroker
 end
 
 class HumanGuesser < CodeBroker
-  def update_guess()
+  def update_guess
     begin
       puts 'Select 4 colors using 4 numbers from 1-6 (NO SPACE).'
       $color_list.each_with_index do |color, index|
@@ -64,8 +64,8 @@ class HumanGuesser < CodeBroker
   end
 end
 
-mastermind = CodeMaker.new()
-Human = HumanGuesser.new()
+mastermind = CodeMaker.new
+Human = HumanGuesser.new
 track = 0
 n = 12
 n.times do
@@ -79,6 +79,5 @@ n.times do
   track += 1
   puts "#{n-track} attempts remaining !!! "
 end
-if track == n 
-  puts "Game Over! You could not guess the secret colors\n They are : #{mastermind.secret_colors}"
-end
+puts "Game Over! You could not guess the secret colors\n They are : #{mastermind.secret_colors}" if track == n 
+
