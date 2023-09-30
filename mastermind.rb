@@ -41,15 +41,17 @@ class CodeBroker
   attr_accessor :guess
 
   def initialize
-    @guess = []
-    4.times do
-      @guess << $color_list.sample
-    end
+    @guess = [1,1,2,2].map! {|x| $color_list[x-1]}
   end
 
   def update_guess(feedback)
     # Need to implement a strategy here
-    @gess.map! {|color| $color_list.sample}
+    gs = @guess.map { |n| $color_list[n-1] }
+    if feedback == p[4,0]
+      puts "Horray!! #{gs}"
+    else 
+      puts @guess
+    end
   end
 end
 
@@ -66,6 +68,25 @@ class HumanGuesser < CodeBroker
     @guess = choice.map {|x| $color_list[x-1]}
   end
 end
+
+class HumanCodeMaker
+
+  def initialize 
+    puts "Think of four colors in #{$color_list}"
+    puts 'Duplicates are allowed'
+    puts 'Write it down somewhere'
+  end
+  
+  def score_a_guess(guess)
+    puts guess
+    score = Array.new
+    puts 'Right colors and right places'
+    score << gets.chomp.to_i
+    puts 'Right colors in wrong places'
+    score << gets.chomp.to_i
+    score
+  end
+
 
 # Play a round allowing n=12 guesses.
 mastermind = CodeMaker.new
@@ -84,4 +105,3 @@ n.times do
   puts "#{n-track} attempts remaining !!! "
 end
 puts "Game Over! You could not guess the secret colors\n They are : #{mastermind.secret_colors}" if track == n 
-
