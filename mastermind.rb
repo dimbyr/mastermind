@@ -41,17 +41,21 @@ class CodeBroker
   attr_accessor :guess
 
   def initialize
-    @guess = [1,1,2,2].map! {|x| $color_list[x-1]}
+    @guess = [1, 1, 2, 2].map! {|x| $color_list[x-1]}
   end
 
   def update_guess(feedback)
     # Need to implement a strategy here
-    gs = @guess.map { |n| $color_list[n-1] }
-    if feedback == p[4,0]
-      puts "Horray!! #{gs}"
-    else 
-      puts @guess
+    if feedback == [4, 0]
+      puts 'Horray!!'
+    else
+      @guess = []
+      4.times do
+        @guess << $color_list.sample
+      end
     end
+    print @guess
+    puts ''
   end
 end
 
@@ -65,43 +69,71 @@ class HumanGuesser < CodeBroker
       end
       choice = gets.chomp.split('').map!(&:to_i)
     end until choice.length == 4 && choice.all? { |x| x >= 1 && x <= 6 }
-    @guess = choice.map {|x| $color_list[x-1]}
+    @guess = choice.map { |x| $color_list[x-1] }
   end
 end
 
+# If the codemaker is a human
 class HumanCodeMaker
 
-  def initialize 
+  def initialize
     puts "Think of four colors in #{$color_list}"
     puts 'Duplicates are allowed'
     puts 'Write it down somewhere'
   end
-  
+
   def score_a_guess(guess)
-    puts guess
-    score = Array.new
+    # puts guess
+    score = []
     puts 'Right colors and right places'
     score << gets.chomp.to_i
     puts 'Right colors in wrong places'
     score << gets.chomp.to_i
     score
   end
-
+end
 
 # Play a round allowing n=12 guesses.
-mastermind = CodeMaker.new
-Human = HumanGuesser.new
+
+codemakers = [HumanCodeMaker.new, CodeMaker.new]
+guessers = [CodeBroker.new, HumanGuesser.new]
+
+puts 'Do you want to be a code maker or a code broker'
+puts '1. Code maker'
+puts '2. Code broker'
+
+p = gets.chomp.to_i - 1
+
+code_maker = codemakers[p]
+guesser = guessers[p]
+
 track = 0
 n = 12
-n.times do
-  guess = Human.update_guess
-  scores = mastermind.score_a_guess(guess)
-  puts "Your scores are the following:\n #{scores}"
-  if scores[:right_color_right_position] == 4
-    puts "Congratulations, You got it! The secret colors are\n #{mastermind.secret_colors}"
-    break
+if p == 1
+  n.times do
+    guess = guesser.update_guess
+    scores = code_maker.score_a_guess(guess)
+    puts "Your scores are the following:\n #{scores}"
+    if scores[:right_color_right_position] == 4
+      puts "Congratulations, You got it! The secret colors are\n #{code_maker.secret_colors}"
+      break
+    end
+    track += 1
+    puts "#{n-track} attempts remaining !!! "
   end
-  track += 1
-  puts "#{n-track} attempts remaining !!! "
+
+  puts "Game Over! You could not guess the secret colors\n They are : #{code_maker.secret_colors}" if track == n
+else
+  guess = guesser.guess
+  print guess
+  puts ''
+  n.times do
+    score = code_maker.score_a_guess(guess)
+    if score == [4, 0]
+      puts 'Yaaaaay !!! '
+      break
+    else
+      guess = guesser.update_guess(score)
+    end
+  end
 end
-puts "Game Over! You could not guess the secret colors\n They are : #{mastermind.secret_colors}" if track == n 
