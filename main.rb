@@ -33,7 +33,8 @@ if p == 1
 else
   puts "Think of four colors in #{color_list}"
   puts 'Duplicates are allowed'
-  puts 'Write them down in order somewhere! I am going to read your mind'
+  puts 'Write them down in order somewhere! I am going to read your mind! When you are done, press Enter.'
+  gets
   guess = guesser.guess
   print guess
   puts ''
