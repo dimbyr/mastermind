@@ -48,7 +48,7 @@ class CodeBroker
     # Need to implement a strategy here
     if feedback == [4, 0]
       puts 'Horray!!'
-    elsif feedback == [0,4]
+    elsif feedback.sum == 4
       @guess.shuffle!
     else
       @guess = []
