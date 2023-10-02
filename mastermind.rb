@@ -95,4 +95,3 @@ class HumanCodeMaker
     score
   end
 end
-
