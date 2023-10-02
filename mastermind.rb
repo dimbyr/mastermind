@@ -79,18 +79,19 @@ end
 class HumanCodeMaker
 
   def initialize
-    puts "Think of four colors in #{$color_list}"
-    puts 'Duplicates are allowed'
-    puts 'Write it down somewhere'
   end
 
   def score_a_guess(guess)
     # puts guess
     score = []
-    puts 'Right colors and right places'
+    puts 'How many right colors on the right places?'
     score << gets.chomp.to_i
-    puts 'Right colors in wrong places'
-    score << gets.chomp.to_i
+    if score == [4]
+      score << 0
+    else
+      puts 'How many right colors in wrong places?'
+      score << gets.chomp.to_i
+    end
     score
   end
 end
@@ -126,6 +127,9 @@ if p == 1
 
   puts "Game Over! You could not guess the secret colors\n They are : #{code_maker.secret_colors}" if track == n
 else
+  puts "Think of four colors in #{$color_list}"
+  puts 'Duplicates are allowed'
+  puts 'Write them down in order somewhere! I am going to read your mind'
   guess = guesser.guess
   print guess
   puts ''
